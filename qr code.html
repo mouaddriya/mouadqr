@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Générateur QR – By Mouad Driya</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #4c7df0, #6bc9ff);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: #fff;
+    }
+
+    .card {
+      background: #ffffff;
+      color: #333;
+      padding: 30px;
+      width: 380px;
+      border-radius: 18px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+      text-align: center;
+      animation: fadeIn 0.6s ease;
+    }
+
+    @keyframes fadeIn {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    h2 {
+      margin-top: 0;
+      font-weight: 600;
+      color: #2a4f9e;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 15px;
+      margin-bottom: 15px;
+      outline: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      background: #2a4f9e;
+      color: white;
+      font-size: 15px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #1f3d7b;
+    }
+
+    #qrcode {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    #save {
+      margin-top: 12px;
+      background: #00a884;
+    }
+
+    #save:hover {
+      background: #00876b;
+    }
+
+    /* Footer name */
+    .footer {
+      margin-top: 22px;
+      font-size: 13px;
+      color: #777;
+      font-weight: 600;
+    }
+
+    .footer span {
+      color: #2a4f9e;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h2>Générateur QR</h2>
+
+    <input id="text" type="text" placeholder="Écris un texte ou URL">
+    <button id="gen">Générer</button>
+
+    <div id="qrcode"></div>
+
+    <button id="save" style="display:none;">Télécharger le QR</button>
+
+    <div class="footer">Créé par <span>Mouad Driya</span></div>
+  </div>
+
+  <!-- Librairie QR -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <script>
+    const genBtn = document.getElementById('gen');
+    const input = document.getElementById('text');
+    const qrDiv = document.getElementById('qrcode');
+    const saveBtn = document.getElementById('save');
+    let qr;
+
+    genBtn.addEventListener('click', () => {
+      const text = input.value.trim();
+      if(!text){ alert('Entrer un texte ou une URL.'); return; }
+
+      qrDiv.innerHTML = '';
+
+      qr = new QRCode(qrDiv, { 
+        text: text,
+        width: 220,
+        height: 220,
+        correctLevel: QRCode.CorrectLevel.H 
+      });
+
+      saveBtn.style.display = 'block';
+    });
+
+    saveBtn.addEventListener('click', () => {
+      const img = qrDiv.querySelector('img');
+      if(img){
+        const a = document.createElement('a');
+        a.href = img.src;
+        a.download = 'qrcode.png';
+        a.click();
+      } else {
+        const canvas = qrDiv.querySelector('canvas');
+        const a = document.createElement('a');
+        a.href = canvas.toDataURL('image/png');
+        a.download = 'qrcode.png';
+        a.click();
+      }
+    });
+  </script>
+
+</body>
+</html>
